@@ -1,0 +1,153 @@
+#%RAML 1.0
+title: NJC-WMA-RDS-SAPI
+
+types:
+  clientDataType: !include dataTypes/clientDataType.raml
+  accountDataType: !include dataTypes/accountDataType.raml
+  accountDetailsDataType: !include dataTypes/accountDetailsDataType.raml
+  subAccountDataType: !include dataTypes/subAccountDataType.raml
+  subAccountDetailsDataType: !include dataTypes/subAccountDetailsDataType.raml
+ 
+
+/client:
+  post:
+    description: adds client information to wm_client
+    body:
+      application/json:
+        type: clientDataType
+        example: !include examples/clientExample.raml
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              {
+                "message": "insert successful"
+              }
+  /{clientId}:
+    get:
+      description: retireves client information using client_id from wm_client
+      responses:
+        200:
+          body:
+            application/json:
+              example: !include examples/account_byclientidexample.json
+   
+/account:
+  post:
+    description: adds general account information (linking clients to their accounts) to wm_account
+    body:
+      application/json:
+        type: accountDataType
+        example: !include examples/accountexample.json
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              {
+                "message": "insert successful"
+              }
+  
+             
+  /{accountId}:
+    get:
+      description: retrieves account information from wm_account
+      responses:
+        200:
+          body:
+            application/json:
+              example: !include examples/accountexample.json 
+
+ 
+    /details:
+      post:
+        description: adds individual account details to wm_acct_details in rds
+        body:
+          application/json:
+            type: accountDetailsDataType
+            example: !include examples/accountdetailsexample.json
+        responses:
+          200:
+            body:
+              application/json:
+                example:
+                  {
+                    "message": "insert successful"
+                  }
+      get:
+          description: retrieves account details from wm_acct_details
+          responses:
+            200:
+              body:
+                application/json:
+                  example: !include examples/accountdetailsexample.json
+  /summary:
+    get:
+      description: "retrieves client account details according to account type"
+      queryParameters:
+        accountType:
+          type: string
+      responses:
+        200:
+          body:
+            application/json:
+              example: !include examples/accountsummarydetailsexample.json
+
+    
+/summary/{Id}:
+  
+    get:
+      description: retrieves account information from wm_account
+      responses:
+        200:
+          body:
+            application/json:
+              example: !include examples/account_byclientidexample.json      
+      
+/subAccount:
+  post:
+    description: adds sub account general information (linking sub accounts to their account) to wm_sub-acct
+    body:
+      application/json:
+        type: subAccountDataType
+        example: !include examples/subaccountexample.json
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              {
+                "message": "insert successful"
+              }
+  /{sub_acct_id}:
+    get:
+      description: retrieves account information from wm_account
+      responses:
+        200:
+          body:
+            application/json:
+    /details:
+      post:
+        description: adds sub account details to wm_sub_acct_details
+        body:
+          application/json:
+            type: subAccountDetailsDataType
+            example: !include examples/subaccountdetailsexample.json
+        responses:
+          200:
+            body:
+              application/json:
+                example:
+                  {
+                    "message": "insert successful"
+                  }
+      /{sub_acct_id}:
+        get:
+          description: retrieves sub account details from wm_sub_acct
+          responses:
+            200:
+              body:
+                application/json:
+                  example: !include examples/subaccountdetailsexample.json
+        

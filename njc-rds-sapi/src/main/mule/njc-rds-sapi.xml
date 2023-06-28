@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="njc-rds-sapiaccount" doc:id="3a56acbc-d2c8-406e-866c-310142036e81" >
+		<logger level="INFO" doc:name="Start Logger" doc:id="9feb2d51-70ab-4cdf-9ead-dce6221150be" message="Initial Logger" />
+		<db:select doc:name="Select" doc:id="b06c65ce-4b59-4d8d-a205-e333f70c7ae6" config-ref="Database_Config">
+			<db:sql ><![CDATA[Select * from wealthmanagement.wm_account where ACCT_ID=:ACCT_ID]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	"ACCT_ID": attributes.uriParams.accountId}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="e56166b6-8d7d-47bd-8817-41f72e4d1109" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json skipNullOn="everywhere"
+---
+payload map(payload,payload01)->
+{
+ "clientId":payload.CLIENT_ID,
+ "clientAccountNumber":payload.CLIENT_ACCT_NUM,
+ "accountId":payload.ACCT_ID,
+ "productCode":payload.PROD_CODE,
+ "currencyCode":payload.CURR_CODE,
+ "commDate":payload.COMM_DATE,
+ "jointFlag":payload.JOINT_FLAG,
+ "accountType":payload.ACCT_TYPE
+   }]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="End Logger" doc:id="fab90a57-a710-44b9-9501-75dd4ee5ad17" message="Logger Ends"/>
+	</flow>
+	<flow name="njc-rds-accountdetails" doc:id="42ef8ef4-e61e-49e9-bc8c-905272f86a03" >
+		<logger level="INFO" doc:name="Start Logger" doc:id="85d05859-7f94-4105-887e-31257fbea07d" message="Initial Logger" />
+		<db:select doc:name="Select" doc:id="8e0e82e2-15d0-45c9-b487-5e56d845df7c" config-ref="Database_Config">
+			<db:sql ><![CDATA[Select * from wealthmanagement.wm_acct_details where ACCT_ID=:ACCT_ID]]></db:sql>
+			<db:input-parameters ><![CDATA[#[output application/json
+---
+{
+	ACCT_ID: attributes.uriParams.accountId 
+}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="3250f0b5-2aa3-4c3d-8b6d-27eec3114902" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json skipNullOn="everywhere"
+---
+payload map(payload,payload01)->
+{
+	"accountDetails":
+	{
+    "accountId":payload.ACCT_ID,
+    
+     "productCode":payload.PROD_CODE,
+    "validityDate":payload.VAL_DATE,
+ 
+
+    
+    "totalInvestmentAmount":payload.TOT_INVEST_AMT,
+    "totalWithdrawnAmount":payload.TOT_WDRAW_AMT,
+    "totalIncomeAmount":payload.TOT_INCOME_AMT,
+    "currentAssetValueAmount":payload.CURR_ASSET_VAL_AMT,
+    "bankingBalanceAmount":payload.BANKING_BALANCE_AMT,
+    "encashmentValueAmount":payload.ENCASH_VALUE_AMT,
+    "netChange":payload.NET_CHANGE,
+    
+}}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="End Logger" doc:id="d9b59a8a-0ff2-4cc2-8bae-61efcdcda2c3" message="Logger Ends" />
+	</flow>
+	<flow name="njc-rds-subaccount" doc:id="1d155b5d-a3aa-4358-be65-d056c101254b" >
+		<logger level="INFO" doc:name="Start Logger" doc:id="2ffe0dda-c23d-4fb5-86af-95c72d576722" message="Initial Logger" />
+		<db:select doc:name="Select" doc:id="a5295498-ae3a-40b0-a0a7-cf1b04178a32" config-ref="Database_Config">
+			<db:sql ><![CDATA[Select * from wealthmanagement.wm_sub_acct where SUB_ACCT_ID=:SUB_ACCT_ID]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	"SUB_ACCT_ID": attributes.uriParams.sub_acct_id
+}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="2d3f44f6-fcc3-429d-a05d-93ae378b8c5d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json skipNullOn="everywhere"
+---
+payload map(payload,payload01)->
+{
+    "accountId":payload.ACCT_ID,
+     "subAccountId":payload.SUB_ACCT_ID,
+       "subAccountNumber":payload.SUB_ACCT_NUM,
+    "productCode":payload.PROD_CODE,
+    "commDate":payload.COMM_DATE,
+    "encashmentValueAmount":payload.ENCASH_VALUE_AMT,
+ 
+     
+   
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="End Logger" doc:id="e277081e-afde-46b4-a36c-cdccce0bbc40" message="Logger Ends" />
+	</flow>
+	<flow name="njc-rds-subaccountdetails" doc:id="2fc54344-c55d-4ba7-8c6e-e544699baaaf" >
+		<logger level="INFO" doc:name="Start Logger" doc:id="c35d9ed6-e7a3-41da-92ba-77623d745673" message="Initial Logger" />
+		<db:select doc:name="Select" doc:id="564d47d8-e610-4708-ae17-4645055f27f2" config-ref="Database_Config">
+			<db:sql ><![CDATA[Select * from wealthmanagement.wm_sub_acct_details where SUB_ACCT_ID=:SUB_ACCT_ID]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	"SUB_ACCT_ID":attributes.uriParams.sub_acct_id}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="d540ecfc-e6d8-4250-9427-09472bf7dce5" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map(payload,payload01)->
+{
+    "accountId":payload.ACCT_ID,
+    "subAccountId":payload.SUB_ACCT_ID,
+    "validityDate":payload.VAL_DATE,
+    
+    "totalInvestmentAmount":payload.TOT_INVEST_AMT,
+    "totalWithdrawnAmount":payload.TOT_WDRAW_AMT,
+    "totalIncomeAmount":payload.TOT_INCOME_AMT,
+    "currentAssetValueAmount":payload.CURR_ASSET_VAL_AMT,
+    "bankingBalanceAmount":payload.BANKING_BALANCE_AMT,
+    "encashmentValueAmount":payload.ENCASH_VALUE_AMT,
+    "netChange":payload.NET_CHANGE,
+    
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="End Logger" doc:id="704012eb-59bb-4193-a082-0a0b833b93be" message="Logger Ends" />
+	</flow>
+	<flow name="njc-rds-accountUsingclientIdFlow" doc:id="ae4b7fd3-bfe4-456a-b081-9499cc08c796" >
+		<logger level="INFO" doc:name="Start Logger" doc:id="44260318-e0a8-4f58-9fc4-852ac87a04bb" message="Initial Logger" />
+		<db:select doc:name="Select" doc:id="4bc51349-874b-4b9e-8b66-fd44092325b9" config-ref="Database_Config" >
+			<db:sql ><![CDATA[Select * from wealthmanagement.wm_account where CLIENT_ID=:CLIENT_ID]]></db:sql>
+			<db:input-parameters ><![CDATA[#[output application/json
+---
+{
+	CLIENT_ID: attributes.uriParams.Id 
+}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="5680d824-e08b-4ea6-a202-af84afd7974d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json skipNullOn="everywhere"
+---
+payload map(payload,payload01)->
+{
+ "clientId":payload.CLIENT_ID,
+ "clientAccountNumber":payload.CLIENT_ACCT_NUM,
+ "accountId":payload.ACCT_ID,
+ "productCode":payload.PROD_CODE,
+ "currencyCode":payload.CURR_CODE,
+ "commDate":payload.COMM_DATE,
+ "jointFlag":payload.JOINT_FLAG,
+ "accountType":payload.ACCT_TYPE
+   }]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="End Logger" doc:id="2be0f99e-015c-4696-ab2c-41c1842b99a4" message="Logger Ends" />
+	</flow>
+	<flow name="njc-rds-accountsummaryFlow" doc:id="6a6fafe0-5183-4e81-882a-6647925a2309" >
+		<logger level="INFO" doc:name="Start Logger" doc:id="ce140b19-5842-408a-a0b8-7727836ccac2" message="Initial Logger" />
+		<db:select doc:name="Select" doc:id="8567f300-7d5c-46fd-8239-4452d0f39396" config-ref="Database_Config" >
+			<db:sql ><![CDATA[Select * from wealthmanagement.wm_account where ACCT_TYPE=:ACCT_TYPE]]></db:sql>
+			<db:input-parameters ><![CDATA[#[output application/json
+---
+{
+	ACCT_TYPE: attributes.queryParams.accountType 
+}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="daca9e79-3b06-4bb3-9e5b-ea20356a882d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json skipNullOn="everywhere"
+---
+payload map(payload,payload01)->
+{
+ "clientId":payload.CLIENT_ID,
+ "clientAccountNumber":payload.CLIENT_ACCT_NUM,
+ "accountId":payload.ACCT_ID,
+ "productCode":payload.PROD_CODE,
+ "currencyCode":payload.CURR_CODE,
+ "commDate":payload.COMM_DATE,
+ "jointFlag":payload.JOINT_FLAG,
+ "accountType":payload.ACCT_TYPE
+   }]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="End Logger" doc:id="f3c4a7e8-6c86-4d35-8686-a57e86e59713" message="Logger Ends" />
+	</flow>
+</mule>

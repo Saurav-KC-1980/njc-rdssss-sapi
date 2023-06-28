@@ -1,0 +1,22 @@
+
+    [{
+        "clientId": 100,
+        "clientAccountNumber": "LA01",
+        "accountId": 98534,
+        "productCode": "LSA895",
+        "currencyCode": "CUR002",
+        "commDate": "2022-04-12",
+        "jointFlag": "No",
+        "accountType": "Investment"
+    },
+
+    {
+        "clientId": 106,
+        "clientAccountNumber": "LA02",
+        "accountId": 98536,
+        "productCode": "LSA896",
+        "currencyCode": "CUR002",
+        "commDate": "2022-03-11",
+        "jointFlag": "YES",
+        "accountType": "Banking"
+    }]

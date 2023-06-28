@@ -1,0 +1,13 @@
+
+    {
+        "accountId": 98534,
+        "subAccountId": 21345,
+        "validityDate": "2022-01-31",
+        "totalInvestmentAmount": "4200000.00",
+        "totalWithdrawnAmount": "2000000.00",
+        "totalIncomeAmount": "4500000.00",
+        "currentAssetValueAmount": "3400000.00",
+        "bankingBalanceAmount": "3500000.00",
+        "encashmentValueAmount": "4000000.00",
+        "netChange": "25000"
+    }
