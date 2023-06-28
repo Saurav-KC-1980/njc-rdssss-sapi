@@ -218,13 +218,13 @@ output application/json
         </ee:transform>
     </flow>
     <flow name="get:\account\(accountId)\details:njc-wma-rds-sapi-config">
-		<flow-ref doc:name="Flow Reference" doc:id="050f0dbb-ea62-48c1-bbe9-467c05a11919" name="njc-rds-accountdetails"/>
+        <flow-ref doc:name="Flow Reference" doc:id="050f0dbb-ea62-48c1-bbe9-467c05a11919" name="njc-rds-accountdetails" />
     </flow>
     <flow name="get:\summary\(Id):njc-wma-rds-sapi-config">
-		<flow-ref doc:name="Flow Reference" doc:id="a56e982c-582b-4dd1-8581-bda352f7d807" name="njc-rds-accountUsingclientIdFlow"/>
+        <flow-ref doc:name="Flow Reference" doc:id="a56e982c-582b-4dd1-8581-bda352f7d807" name="njc-rds-accountUsingclientIdFlow" />
     </flow>
     <flow name="get:\account\(accountId):njc-wma-rds-sapi-config">
-		<flow-ref doc:name="Flow Reference" doc:id="c4edb78b-f95d-41e9-a8df-e54b59758d39" name="njc-rds-sapiaccount"/>
+        <flow-ref doc:name="Flow Reference" doc:id="c4edb78b-f95d-41e9-a8df-e54b59758d39" name="njc-rds-sapiaccount" />
     </flow>
     <flow name="get:\client\(clientId):njc-wma-rds-sapi-config">
         <ee:transform>
@@ -266,5 +266,8 @@ output application/json
 }]]></ee:set-payload>
             </ee:message>
         </ee:transform>
+    </flow>
+    <flow name="get:\account\(Id)\summary:njc-wma-rds-sapi-config">
+		<flow-ref doc:name="clientAccountSummary" doc:id="1c2899ae-5d76-46e0-b337-99cd0c391ea9" name="clientAccountSummary"/>
     </flow>
 </mule>
